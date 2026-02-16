@@ -1,52 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Thought Reframer</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+textarea {
+  width: 100%;
+  height: 80px;
+  margin-top: 10px;
+}
+button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+}
+.output {
+  margin-top: 15px;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Reframe a Thought</h2>
+  <textarea id="input" placeholder="Type a negative thought..."></textarea>
+  <button onclick="reframe()">Make it Positive</button>
+  <div class="output" id="output"></div>
+</div>
+
 <script>
 function reframe() {
-  let input = document.getElementById("input").value.toLowerCase();
+  let text = document.getElementById("input").value;
 
-  const topicReframes = {
-    winter: [
-      "Winter is temporary — spring is on its way.",
-      "Cold seasons pass, and warmer days always return.",
-      "This quiet season can be a time to rest and reset."
-    ],
-    single: [
-      "There are billions of people in the world — new connections are possible.",
-      "Being single gives me time to grow and meet people who truly fit.",
-      "Love can arrive in unexpected ways when I keep showing up."
-    ],
-    job: [
-      "This job is one step in a longer journey — better opportunities can come.",
-      "I’m gaining experience that can open new doors.",
-      "Every challenge here is building skills for my next move."
-    ],
-    tired: [
-      "I can rest and try again tomorrow.",
-      "My body is asking for care, and I can give it that.",
-      "Taking a break now helps me come back stronger."
-    ]
-  };
+  let replacements = [
+    ["I can't", "I'm learning to"],
+    ["I am bad at", "I'm improving at"],
+    ["I failed", "I learned from"],
+    ["I hate", "I'm struggling with"],
+    ["I'll never", "I haven't yet"],
+    ["I'm terrible", "I'm still growing"],
+    ["I'm not good enough", "I'm developing my skills"]
+  ];
 
-  let matched = false;
-  let output = "";
+  let result = text;
 
-  for (let topic in topicReframes) {
-    if (input.includes(topic)) {
-      let options = topicReframes[topic];
-      output = options[Math.floor(Math.random() * options.length)];
-      matched = true;
-      break;
-    }
-  }
+  replacements.forEach(pair => {
+    result = result.replace(pair[0], pair[1]);
+  });
 
-  if (!matched) {
-    const general = [
-      "This feeling is temporary, and I can take one small step forward.",
-      "I’m learning and growing, even when it’s hard.",
-      "I can be kind to myself while I figure this out.",
-      "Progress happens slowly, and I’m still moving forward."
-    ];
-    output = general[Math.floor(Math.random() * general.length)];
-  }
+  result = result + " — and I can take one small step today.";
 
-  document.getElementById("output").innerText = output;
+  document.getElementById("output").innerText = result;
 }
 </script>
+
+</body>
+</html>
