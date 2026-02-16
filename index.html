@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Thought Reframer</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+textarea {
+  width: 100%;
+  height: 80px;
+  margin-top: 10px;
+}
+button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+}
+.output {
+  margin-top: 15px;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Reframe a Thought</h2>
+  <textarea id="input" placeholder="Type a negative thought..."></textarea>
+  <button onclick="reframe()">Make it Positive</button>
+  <div class="output" id="output"></div>
+</div>
+
+<script>
+function reframe() {
+  let text = document.getElementById("input").value;
+
+  let replacements = [
+    ["I can't", "I'm learning to"],
+    ["I am bad at", "I'm improving at"],
+    ["I failed", "I learned from"],
+    ["I hate", "I'm struggling with"],
+    ["I'll never", "I haven't yet"],
+    ["I'm terrible", "I'm still growing"],
+    ["I'm not good enough", "I'm developing my skills"]
+  ];
+
+  let result = text;
+
+  replacements.forEach(pair => {
+    result = result.replace(pair[0], pair[1]);
+  });
+
+  result = result + " — and I can take one small step today.";
+
+  document.getElementById("output").innerText = result;
+}
+</script>
+
+</body>
+</html>
