@@ -19,10 +19,10 @@ body {
   width: 400px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
-textarea {
+textarea, input {
   width: 100%;
-  height: 80px;
   margin-top: 10px;
+  padding: 8px;
 }
 button {
   margin-top: 10px;
@@ -33,49 +33,82 @@ button {
   margin-top: 15px;
   font-weight: bold;
 }
+.status {
+  font-size: 12px;
+  color: gray;
+}
 </style>
 </head>
 <body>
 
 <div class="card">
   <h2>Reframe a Thought</h2>
+
   <textarea id="input" placeholder="Type a negative thought..."></textarea>
   <button onclick="reframe()">Make it Positive</button>
   <div class="output" id="output"></div>
+
+  <hr>
+
+  <h3>Add a word pair</h3>
+  <input id="newPair" placeholder="ugly = beautiful">
+  <button onclick="addPair()">Add to Word List</button>
+  <div class="status" id="status"></div>
 </div>
 
 <script>
+
+// Load saved replacements or default ones
+let replacements = JSON.parse(localStorage.getItem("replacements")) || [
+  ["can't", "can"],
+  ["doesn't", "does"],
+  ["failure", "success"],
+  ["don't", "do"],
+  ["isn't", "is"],
+  ["bad", "good"],
+  ["hate", "love"],
+  ["I'll never", "I will"],
+  ["I'm terrible", "I'm good"],
+  ["I'm not ", "I am"],
+  ["doomed", "safe"],
+  ["waste", "success"],
+  ["wrong", "right"]
+];
+
 function reframe() {
   let text = document.getElementById("input").value;
-
-  let replacements = [
-    ["can't", "can"],
-    ["doesn't", "does"],
-    ["failure", "success"],
-    ["don't", "do"],
-    ["isn't", "is"],
-    ["bad", "good"],
-    ["I failed", "I learned from"],
-    ["hate", "love"],
-    ["I'll never", "I will"],
-    ["I'm terrible", "I'm good"],
-    ["I'm not ", "I am"],
-    ["I'm spiralling ", "I am spiralling upwards"],
-    ["doomed", "not doomed"],
-    ["waste", "success"],
-    ["wrong", "perfect"]
-  ];
 
   let result = text;
 
   replacements.forEach(pair => {
-    result = result.replace(pair[0], pair[1]);
+    let regex = new RegExp(pair[0], "gi");
+    result = result.replace(regex, pair[1]);
   });
-
-  result = result + " — and I can take one small step today.";
 
   document.getElementById("output").innerText = result;
 }
+
+function addPair() {
+  let pairText = document.getElementById("newPair").value;
+
+  if (!pairText.includes("=")) {
+    document.getElementById("status").innerText =
+      "Use format: ugly = beautiful";
+    return;
+  }
+
+  let [bad, good] = pairText.split("=").map(x => x.trim());
+
+  replacements.push([bad, good]);
+
+  localStorage.setItem("replacements", JSON.stringify(replacements));
+
+  document.getElementById("status").innerText =
+    `Added "${bad} → ${good}"`;
+
+  document.getElementById("newPair").value = "";
+}
+
 </script>
 
 </body>
