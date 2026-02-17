@@ -53,33 +53,42 @@ button {
   <h3>Add a word pair</h3>
   <input id="newPair" placeholder="ugly = beautiful">
   <button onclick="addPair()">Add to Word List</button>
+  <button onclick="sendToGoogleForm()">Send Suggestion to Developer</button>
   <div class="status" id="status"></div>
 </div>
 
 <script>
 
-// ⭐⭐ YOUR GOOGLE FORM INFO ⭐⭐
-const FORM_URL =
-"https://docs.google.com/forms/d/e/1FAIpQLSelwz1FqlQDKF7fACwpeLqhxNU7d3ZDvJMkvtO03S1sBCnlXg/formResponse";
-
-const ENTRY_ID = "entry.1092775384";
-// ----------------------------------
-
-
-// Load saved replacements
+// Load saved replacements or default ones
 let replacements = JSON.parse(localStorage.getItem("replacements")) || [
   ["can't", "can"],
   ["doesn't", "does"],
+  ["failure", "success"],
+  ["don't", "do"],
+  ["isn't", "is"],
   ["bad", "good"],
-  ["hate", "love"]
+  ["hate", "love"],
+  ["I'll never", "I will"],
+  ["I'm terrible", "I'm good"],
+  ["I'm not", "I am"],
+  ["doomed", "safe"],
+  ["waste", "success"],
+  ["wrong", "right"]
 ];
+
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
+}
 
 function reframe() {
   let text = document.getElementById("input").value;
   let result = text;
 
+  // longest phrases first
+  replacements.sort((a, b) => b[0].length - a[0].length);
+
   replacements.forEach(pair => {
-    let regex = new RegExp(pair[0], "gi");
+    let regex = new RegExp(escapeRegExp(pair[0]), "gi");
     result = result.replace(regex, pair[1]);
   });
 
@@ -95,7 +104,43 @@ function addPair() {
     return;
   }
 
-  // Save locally
   let [bad, good] = pairText.split("=").map(x => x.trim());
+
   replacements.push([bad, good]);
-  localStorage.setItem("replacements", JSON.stringify
+  localStorage.setItem("replacements", JSON.stringify(replacements));
+
+  document.getElementById("status").innerText =
+    `Added "${bad} → ${good}"`;
+
+  document.getElementById("newPair").value = "";
+}
+
+// ⭐ GOOGLE FORM SUBMITTER
+function sendToGoogleForm() {
+  let pairText = document.getElementById("newPair").value;
+
+  if (!pairText) {
+    document.getElementById("status").innerText = "Enter a pair first";
+    return;
+  }
+
+  let formURL = "https://docs.google.com/forms/d/e/1FAIpQLSelwz1FqlQDKF7fACwpeLqhxNU7d3ZDvJMkvtO03S1sBCnlXg/formResponse";
+  let entryID = "entry.1092775384";
+
+  fetch(formURL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: entryID + "=" + encodeURIComponent(pairText)
+  });
+
+  document.getElementById("status").innerText = "Suggestion sent to developer ✔";
+  document.getElementById("newPair").value = "";
+}
+
+</script>
+
+</body>
+</html>
