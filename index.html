@@ -58,34 +58,24 @@ button {
 
 <script>
 
-  // ⭐⭐ PASTE GOOGLE FORM INFO HERE ⭐⭐
-  
-  const FORM_URL =
+// ⭐⭐ YOUR GOOGLE FORM INFO ⭐⭐
+const FORM_URL =
 "https://docs.google.com/forms/d/e/1FAIpQLSelwz1FqlQDKF7fACwpeLqhxNU7d3ZDvJMkvtO03S1sBCnlXg/formResponse";
 
 const ENTRY_ID = "entry.1092775384";
+// ----------------------------------
 
 
-// Load saved replacements or default ones
+// Load saved replacements
 let replacements = JSON.parse(localStorage.getItem("replacements")) || [
   ["can't", "can"],
   ["doesn't", "does"],
-  ["failure", "success"],
-  ["don't", "do"],
-  ["isn't", "is"],
   ["bad", "good"],
-  ["hate", "love"],
-  ["I'll never", "I will"],
-  ["I'm terrible", "I'm good"],
-  ["I'm not ", "I am"],
-  ["doomed", "safe"],
-  ["waste", "success"],
-  ["wrong", "right"]
+  ["hate", "love"]
 ];
 
 function reframe() {
   let text = document.getElementById("input").value;
-
   let result = text;
 
   replacements.forEach(pair => {
@@ -105,19 +95,7 @@ function addPair() {
     return;
   }
 
+  // Save locally
   let [bad, good] = pairText.split("=").map(x => x.trim());
-
   replacements.push([bad, good]);
-
-  localStorage.setItem("replacements", JSON.stringify(replacements));
-
-  document.getElementById("status").innerText =
-    `Added "${bad} → ${good}"`;
-
-  document.getElementById("newPair").value = "";
-}
-
-</script>
-
-</body>
-</html>
+  localStorage.setItem("replacements", JSON.stringify
